@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  minecraft:
+    image: itzg/minecraft-server
+    container_name: mc-server
+    ports:
+      - "25565:25565"
+    environment:
+      EULA: "TRUE"
+      VERSION: ${MINECRAFT_VERSION}
+      ONLINE_MODE: "FALSE" 
+      ENABLE_RCON: "true"
+      RCON_PASSWORD: "guizaum@2022"
+      MAX_MEMORY: "6G"
+      DIFFICULTY: ${MINECRAFT_DIFFICULTY}
+      MAX_PLAYERS: ${MINECRAFT_MAX_PLAYERS}
+      MOTD: ${MINECRAFT_MOTD}
+    volumes:
+      - ./data:/data
+      - ./mods:/mods 
+    tty: true
+    stdin_open: true  
+
+  ngrok:
+    image: ngrok/ngrok
+    ports:
+      - "4040:4040"
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    depends_on:
+      - minecraft
+    command: 'tcp minecraft:25565'
